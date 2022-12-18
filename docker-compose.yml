@@ -1,0 +1,45 @@
+version: '3'
+services:
+  php:
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+    container_name: cakephp_web
+    hostname: cakephp_web
+    privileged: true
+    tty: true
+    depends_on:
+      - db
+    volumes:
+      - ../app/config:/var/www/html/config
+      - ../app/src:/var/www/html/src
+      - ../app/templates:/var/www/html/templates
+      - ../app/tests:/var/www/html/tests
+      - ../app/webroot:/var/www/html/webroot
+      - ../app/.gitignore:/var/www/html/.gitignore
+    ports:
+      - ${WEB_HTTP_PORT}:80
+      - ${WEB_HTTPS_PORT}:443
+
+  db:
+    image: mysql:8.0
+    container_name: cakephp_mysql
+    hostname: cakephp_mysql
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+    environment:
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASS}
+      - MYSQL_ROOT_PASSWORD=${DB_PASS}
+    ports:
+      - ${DB_PORT}:3306
+    restart: always
+
+  adminer:
+    image: adminer
+    container_name: cakephp_adminer
+    hostname: cakephp_adminer
+    ports:
+      - ${ADMINER_PORT}:8080
