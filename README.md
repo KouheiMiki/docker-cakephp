@@ -1,4 +1,4 @@
-# Docker + CentOS7 + Apache + CakePHP + mysql
+# Docker + CentOS7 + Apache + CakePHP + MySQL
 
 Dockerコンテナテンプレート
 
